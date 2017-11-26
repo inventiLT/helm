@@ -1,0 +1,83 @@
+#apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+{{ toYaml .Values.updateStrategy |indent 4 }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+          - sh
+          - -c
+          - java -Xmx400m -jar *.jar
+          env:
+#          TODO: Build custom cdc image in order to add logback
+#          {{- if .Values.jsonLogging}}
+#          - name: LOGGING_CONFIG
+#            value: "/cdcservice-logback.xml"
+#          {{- end }}
+          - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+            valueFrom:
+              configMapKeyRef:
+                name: eventbus-kafka
+                key: bootstrap-servers
+          - name: EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING
+            valueFrom:
+              configMapKeyRef:
+                name: eventbus-zookeeper
+                key: zookeeper-servers
+          - name: EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS
+            valueFrom:
+              configMapKeyRef:
+                name: eventbus-kafka
+                key: bootstrap-servers
+          - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+            value: com.mysql.jdbc.Driver
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:mysql://eventstore-mysql/eventuate?useUnicode=true&characterEncoding=utf8&useSSL=false
+          - name: SPRING_DATASOURCE_USERNAME
+            value: mysql
+          - name: SPRING_DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: eventstore-mysql
+                key: mysql-password
+          - name: EVENTUATELOCAL_CDC_DB_USER_NAME
+            value: root
+          - name: EVENTUATELOCAL_CDC_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: eventstore-mysql
+                key: mysql-root-password
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          {{- if .Values.livenessProbe }}
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          {{- end }}
+          {{- if .Values.readinessProbe }}
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}

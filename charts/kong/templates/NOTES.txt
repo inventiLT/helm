@@ -1,0 +1,37 @@
+1. KongProxy - This is an externally visible service. To find the endpoint information for this run:
+
+kubectl get services -w {{ .Release.Name}}-kongproxy
+
+The external ip can be used with the ports listed to connect to API's hosted by KONG. 
+
+2. KongAdmin - This service is internal and only has a ClusterIP assigned. 
+
+//List ClusterIP
+kubectl get services -w {{ .Release.Name }}-kongadmin
+
+//Connect to admin interface
+export PODNAME=$(kubectl get pods | grep -i {{ .Release.Name }}-kongapi | awk '{print $1}')
+kubectl port-forward $PODNAME 8001:8001
+
+curl http://localhost:8001
+
+{{ if .Values.kongDashboard.deploy }}
+
+3. kongDashboard - 3rd party admin interface to Kong. WARNING: Uses only basic authentication. Review security before deployment.  
+
+kubectl get services -w {{ .Release.Name }}-kongdashboard
+
+Once the external IP is listed, run the following to get the external url for the dashboard 
+
+export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ .Release.Name }}-kongdashboard -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+echo http://$SERVICE_IP:{{ .Values.kongDashboard.port }}
+
+Username: {{ .Values.kongDashboard.user }}  Password: {{ .Values.kongDashboard.password }}
+
+The UI will ask for your "Kong node URL". Get this as follows:
+
+export KONG_ADMIN_SERVICE=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ .Release.Name }}-kongadmin -o jsonpath='{.spec.clusterIP}')
+echo http://$KONG_ADMIN_SERVICE:8001
+
+
+{{ end }}

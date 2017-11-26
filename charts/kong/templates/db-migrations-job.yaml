@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-kongmigration
+spec:
+  template:
+    metadata:
+      name: {{ .Release.Name }}-kongmigration
+    spec:
+      containers:
+      - name: kong-migration
+        image: docker.inventi.io/fps-deps/kong:0.11.0
+        env:
+          - name: KONG_NGINX_DAEMON
+            value: "off"
+          - name: KONG_PG_DATABASE
+            value: {{ .Values.backingStoreConfig.KONG_PG_DATABASE }}
+          - name: KONG_PG_USER
+            value: {{ .Values.backingStoreConfig.KONG_PG_USER }}
+          - name: KONG_PG_PASSWORD
+            value: {{ .Values.backingStoreConfig.KONG_PG_PASSWORD }}
+            {{ if .Values.backingStoreConfig.deployment.deployStore }}
+          - name: KONG_PG_HOST
+            value: "{{ .Release.Name }}-{{ .Values.backingStoreConfig.KONG_PG_HOST }}.{{ .Release.Namespace }}.svc.cluster.local"
+            #value: "{{ .Release.Name }}-postgresql.{{ .Release.Namespace }}.svc.cluster.local"
+            {{ else }}
+          - name: KONG_PG_HOST
+            value: {{ .Values.backingStoreConfig.KONG_PG_HOST }}
+            {{ end }}
+        command: [ "/bin/sh", "-c", "kong migrations up" ]
+      restartPolicy: Never
