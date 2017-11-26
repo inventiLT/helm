@@ -10,4 +10,4 @@ $ git commit -av
 $ git push origin master
 ```
 
-From there, you can do a `helm repo add tscharts https://inventilt.github.io/helm`
+From there, you can do a `helm repo add inventi https://inventilt.github.io/helm`
