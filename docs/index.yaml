@@ -1,0 +1,127 @@
+apiVersion: v1
+entries:
+  cdcservice:
+  - apiVersion: v1
+    created: 2017-11-26T08:56:59.052024547+02:00
+    description: Chart to install fps-cdcservice
+    digest: e6aac3106f0adf17b69793ea11146ef97731cb07af9343ee55699200c7bcf04a
+    home: https://github.com/inventiLT/fps-cdcservice/
+    maintainers:
+    - email: karolis@inventi.lt
+      name: Karolis Labrencis
+    name: cdcservice
+    sources:
+    - https://github.com/inventiLT/fps-cdcservice/
+    urls:
+    - https://inventilt.github.io/helm/cdcservice-0.1.0.tgz
+    version: 0.1.0
+  elasticsearch:
+  - created: 2017-11-26T08:56:59.053603375+02:00
+    description: Flexible and powerful open source, distributed real-time search and
+      analytics engine.
+    digest: 328245779383054a467bc691a52af7fc9539c39cfdff3c1c2836019adb0fa039
+    home: https://www.elastic.co/products/elasticsearch
+    icon: https://static-www.elastic.co/assets/blteb1c97719574938d/logo-elastic-elasticsearch-lt.svg
+    maintainers:
+    - email: christian@jetstack.io
+      name: Christian Simon
+    - email: michael.haselton@gmail.com
+      name: Michael Haselton
+    name: elasticsearch
+    sources:
+    - https://www.elastic.co/products/elasticsearch
+    - https://github.com/jetstack/elasticsearch-pet
+    - https://github.com/giantswarm/kubernetes-elastic-stack
+    - https://github.com/GoogleCloudPlatform/elasticsearch-docker
+    urls:
+    - https://inventilt.github.io/helm/elasticsearch-0.1.6.tgz
+    version: 0.1.6
+  kafka:
+  - apiVersion: v1
+    created: 2017-11-26T08:56:59.05545929+02:00
+    description: Apache Kafka is publish-subscribe messaging rethought as a distributed
+      commit log.
+    digest: a1d8d9f48493082722af21ac7893d1f7989021b3f4b1c594818b8936d2aa02e2
+    home: https://kafka.apache.org/
+    icon: https://kafka.apache.org/images/logo.png
+    keywords:
+    - kafka
+    - zookeeper
+    - kafka statefulset
+    maintainers:
+    - email: faraaz@rationalizeit.us
+      name: Faraaz Khan
+    - email: marc.villacorta@gmail.com
+      name: Marc Villacorta
+    name: kafka
+    sources:
+    - https://github.com/kubernetes/charts/tree/master/incubator/zookeeper
+    - https://github.com/Yolean/kubernetes-kafka
+    - https://github.com/solsson/dockerfiles/tree/master/kafka
+    urls:
+    - https://inventilt.github.io/helm/kafka-0.1.4.tgz
+    version: 0.1.4
+  kibana:
+  - apiVersion: v1
+    created: 2017-11-26T08:56:59.056077631+02:00
+    description: Kibana analytics and search dashboard for Elasticsearch
+    digest: 2cfe57903b272a9744bee5ae0af61a83d7d0c3b90017ea3db793a1f7f48ff498
+    maintainers:
+    - email: abrand@apprenda.com
+      name: Alexander Brand
+    - email: dkoshkin@apprenda.com
+      name: Dimitri Koshkin
+    name: kibana
+    urls:
+    - https://inventilt.github.io/helm/kibana-0.1.0.tgz
+    version: 0.1.0
+  kong:
+  - apiVersion: v1
+    created: 2017-11-26T08:56:59.05784173+02:00
+    description: A helm chart for deploying Kong
+    digest: 66a97e8dbf399688b69920c4a0b4a4721df22e138bec3c768a83f54212141d15
+    name: kong
+    urls:
+    - https://inventilt.github.io/helm/kong-0.1.1.tgz
+    version: 0.1.1
+  logging:
+  - apiVersion: v1
+    created: 2017-11-26T08:56:59.059409662+02:00
+    description: A Helm chart for Kubernetes
+    digest: 3062901145be18ee0761d08aae03971e2c7ffe374359b76ce548b1131f297795
+    name: logging
+    urls:
+    - https://inventilt.github.io/helm/logging-0.1.0.tgz
+    version: 0.1.0
+  monitoring:
+  - apiVersion: v1
+    created: 2017-11-26T08:56:59.064322223+02:00
+    description: A Helm chart for Kubernetes
+    digest: 462f1ec95aedf9f3c6987ec63ca74a775430ed999a10a6261d7c13c4000f65e0
+    name: monitoring
+    urls:
+    - https://inventilt.github.io/helm/monitoring-0.1.0.tgz
+    version: 0.1.0
+  mysql:
+  - created: 2017-11-26T08:56:59.06503453+02:00
+    description: Fast, reliable, scalable, and easy to use open-source relational
+      database system.
+    digest: 4cbfa53f95d3cef54c0fbbfc6cb4e1e883da0556206e049c6c9bb6ff2acc3917
+    engine: gotpl
+    home: https://www.mysql.com/
+    icon: https://www.mysql.com/common/logos/logo-mysql-170x115.png
+    keywords:
+    - mysql
+    - database
+    - sql
+    maintainers:
+    - email: viglesias@google.com
+      name: Vic Iglesias
+    name: mysql
+    sources:
+    - https://github.com/kubernetes/charts
+    - https://github.com/docker-library/mysql
+    urls:
+    - https://inventilt.github.io/helm/mysql-0.2.6.tgz
+    version: 0.2.6
+generated: 2017-11-26T08:56:59.050273385+02:00
