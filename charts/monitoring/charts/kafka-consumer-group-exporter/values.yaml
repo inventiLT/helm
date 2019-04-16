@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-  repository: braedon/prometheus-kafka-consumer-group-exporter
+  name: fps-deps/braedon/prometheus-kafka-consumer-group-exporter
   tag: 0.2.0
   pullPolicy: IfNotPresent
 service:

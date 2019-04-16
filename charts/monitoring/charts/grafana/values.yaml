@@ -231,6 +231,18 @@ server:
 
 ## Grafana config file ConfigMap entry
 ##
+provisionConfig:
+  dash.yaml: |
+    apiVersion: 1
+    providers:
+    - name: 'default'
+      orgId: 1
+      folder: ''
+      type: file
+      disableDeletion: false
+      options:
+        path: /var/lib/grafana/dashboards
+
 serverConfigFile:
   grafana.ini: |
     ; instance_name = ${HOSTNAME}

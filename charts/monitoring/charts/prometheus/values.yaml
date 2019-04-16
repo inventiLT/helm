@@ -16,7 +16,7 @@ alertmanager:
   ## alertmanager container image
   ##
   image:
-    repository: prom/alertmanager
+    name: prom/alertmanager
     tag: v0.5.1
     pullPolicy: IfNotPresent
 
@@ -134,7 +134,7 @@ alertmanager:
   service:
     annotations: {}
     labels: {}
-    clusterIP: ""
+    clusterIP: "None"
 
     ## List of IP addresses at which the alertmanager service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -157,7 +157,7 @@ configmapReload:
   ## configmap-reload container image
   ##
   image:
-    repository: jimmidyson/configmap-reload
+    name: jimmidyson/configmap-reload
     tag: v0.1
     pullPolicy: IfNotPresent
 
@@ -181,7 +181,7 @@ kubeStateMetrics:
   ## kube-state-metrics container image
   ##
   image:
-    repository: gcr.io/google_containers/kube-state-metrics
+    name: gcr.io/google_containers/kube-state-metrics
     tag: v0.4.1
     pullPolicy: IfNotPresent
 
@@ -212,7 +212,7 @@ kubeStateMetrics:
       prometheus.io/scrape: "true"
     labels: {}
 
-    clusterIP: None
+    clusterIP: "None"
 
     ## List of IP addresses at which the kube-state-metrics service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -239,7 +239,7 @@ nodeExporter:
   ## node-exporter container image
   ##
   image:
-    repository: prom/node-exporter
+    name: prom/node-exporter
     tag: v0.14.0
     pullPolicy: IfNotPresent
 
@@ -289,7 +289,7 @@ nodeExporter:
       prometheus.io/scrape: "true"
     labels: {}
 
-    clusterIP: None
+    clusterIP: "None"
 
     ## List of IP addresses at which the node-exporter service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -313,7 +313,7 @@ server:
   ## Prometheus server container image
   ##
   image:
-    repository: prom/prometheus
+    name: prom/prometheus
     tag: v1.5.2
     pullPolicy: IfNotPresent
 
@@ -424,7 +424,7 @@ server:
     ## Subdirectory of Prometheus server data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
     ##
-    subPath: ""
+    subPath: "prometeus"
 
   ## Annotations to be added to Prometheus server pods
   ##
@@ -475,7 +475,7 @@ pushgateway:
   ## pushgateway container image
   ##
   image:
-    repository: prom/pushgateway
+    name: prom/pushgateway
     tag: v0.4.0
     pullPolicy: IfNotPresent
 
@@ -797,6 +797,17 @@ serverFiles:
             type: "A"
             port: 9208
 
+      - job_name: 'elasticsearch-exporter'
+        scrape_interval: 60s
+        scrape_timeout:  30s
+        metrics_path: /metrics
+
+        dns_sd_configs:
+          - names:
+              - "monitoring-elasticsearch-exporter"
+            type: "A"
+            port: 9108
+
 
       - job_name: 'kubernetes-cadvisor'
 
@@ -826,6 +837,26 @@ serverFiles:
           regex: (.+)
           target_label: __metrics_path__
           replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
+
+      - job_name: elasticsearch
+        scrape_interval: 60s
+        scrape_timeout:  30s
+        metrics_path: "/metrics"
+        dns_sd_configs:
+          - names:
+              - "monitoring-elasticsearch-exporter"
+            type: "A"
+            port: 9108
+
+      - job_name: jmx-exporter
+        scrape_interval: 30s
+        scrape_timeout:  15s
+        metrics_path: "/"
+        dns_sd_configs:
+          - names:
+              - "jmx-exporter"
+            type: "A"
+            port: 9779
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.

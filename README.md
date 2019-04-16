@@ -4,10 +4,10 @@
 
 ```console
 $ helm package charts/mychart -d docs/
-$ helm repo index docs --url https://inventilt.github.io/helm
+$ helm repo index docs --url https://inventi.github.io/helm
 $ git add -i
 $ git commit -av
 $ git push origin master
 ```
 
-From there, you can do a `helm repo add inventi https://inventilt.github.io/helm`
+From there, you can do a `helm repo add inventi https://inventi.github.io/helm`

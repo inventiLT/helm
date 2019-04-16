@@ -24,7 +24,7 @@ spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.nodeExporter.fullname" . }}{{ else }}"{{ .Values.nodeExporter.serviceAccountName }}"{{ end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.nodeExporter.name }}
-          image: "{{ .Values.nodeExporter.image.repository }}:{{ .Values.nodeExporter.image.tag }}"
+          image: "{{ .Values.global.image.repository }}/{{ .Values.nodeExporter.image.name }}:{{ .Values.nodeExporter.image.tag }}"
           imagePullPolicy: "{{ .Values.nodeExporter.image.pullPolicy }}"
           args:
             - --collector.procfs=/host/proc

@@ -1,3 +1,6 @@
+global:
+  image:
+    repository: docker.inventi.io
 output:
   type: elasticsearch
   elasticsearch:
@@ -18,7 +21,7 @@ output:
 
 collector:
   image:
-    repository: docker.inventi.io/fps-deps/coreos/fluentd-kubernetes
+    name: fps-deps/coreos/fluentd-kubernetes
     tag: v0.12-debian-elasticsearch
   resources:
     limits:
@@ -32,7 +35,7 @@ aggregator:
   enabled: false
   replicas: 2
   image:
-    repository: docker.inventi.io/fps-deps/coreos/fluentd-kubernetes
+    name: fps-deps/coreos/fluentd-kubernetes
     tag: v0.12-debian-elasticsearch
   resources:
     limits:
@@ -42,5 +45,5 @@ aggregator:
       cpu: 1
       memory: 250Mi
 
-#serviceAccountName: fluentd
-serviceAccountName: default
+serviceAccountName: logging-aggregator
+rbacCreate: true

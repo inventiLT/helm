@@ -17,7 +17,7 @@ metadata:
 {{- end }}
   name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
 spec:
-{{- if .Values.kubeStateMetrics.service.clusterIP }}
+{{- if and (.Values.kubeStateMetrics.service.clusterIP) ( eq .Values.kubeStateMetrics.service.type "ClusterIP") }}
   clusterIP: {{ .Values.kubeStateMetrics.service.clusterIP }}
 {{- end }}
 {{- if .Values.kubeStateMetrics.service.externalIPs }}
@@ -38,6 +38,9 @@ spec:
       port: {{ .Values.kubeStateMetrics.service.servicePort }}
       protocol: TCP
       targetPort: 8080
+      {{- if .Values.kubeStateMetrics.service.nodePort }}
+      nodePort:  {{ .Values.kubeStateMetrics.service.nodePort }}
+      {{- end }}
   selector:
     app: {{ template "prometheus.name" . }}
     component: "{{ .Values.kubeStateMetrics.name }}"

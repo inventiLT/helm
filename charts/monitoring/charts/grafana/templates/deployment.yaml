@@ -31,7 +31,7 @@ spec:
   {{- end }}
       containers:
         - name: {{ template "grafana.name" . }}
-          image: "{{ .Values.server.image }}"
+          image: "{{ .Values.global.image.repository }}/{{ .Values.server.image.name }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: {{ default "Always" .Values.server.imagePullPolicy }}
           env:
             - name: GF_SECURITY_ADMIN_USER
@@ -77,6 +77,8 @@ spec:
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
           volumeMounts:
+            - name: dash-provision
+              mountPath: "/etc/grafana/provisioning/dashboards"
             - name: config-volume
               mountPath: {{ default "/etc/grafana" .Values.server.configLocalPath | quote }}
             - name: dashboard-volume
@@ -86,6 +88,9 @@ spec:
               subPath: "{{ .Values.server.persistentVolume.subPath }}"
       terminationGracePeriodSeconds: {{ default 300 .Values.server.terminationGracePeriodSeconds }}
       volumes:
+        - name: dash-provision
+          configMap:
+            name: {{ template "grafana.server.fullname" . }}-dashp
         - name: config-volume
           configMap:
             name: {{ template "grafana.server.fullname" . }}-config

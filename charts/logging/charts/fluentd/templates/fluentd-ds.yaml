@@ -26,10 +26,22 @@ spec:
     spec:
       containers:
       - name: fluentd
-        image: "{{ .Values.collector.image.repository }}:{{ .Values.collector.image.tag }}"
+        image: "{{ .Values.global.image.repository }}/{{ .Values.collector.image.name }}:{{ .Values.collector.image.tag }}"
         imagePullPolicy: {{ .Values.collector.image.pullPolicy }}
         command: ["fluentd", "-c", "/fluentd/etc/fluentd.conf", "-p", "/fluentd/plugins", "-qq"]
         env:
+        {{- if .Values.searchguardEnabled }}
+        - name: ELASTIC_FLUENT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Values.elasticsecret }}"
+              key: elastic-fluentd-username
+        - name: ELASTIC_FLUENT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Values.elasticsecret }}"
+              key: elastic-fluentd-password
+        {{- end }}
         - name: FLUENTD_CONFIG
         {{- if .Values.aggregator.enabled }}
           value: fluentd-forwarder.conf

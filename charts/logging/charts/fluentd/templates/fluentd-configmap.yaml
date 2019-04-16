@@ -285,20 +285,20 @@ data:
 
       {{ if eq .Values.output.type "elasticsearch" -}}
 
-      type elasticsearch
-      host {{ .Values.output.elasticsearch.host }}
+      @type elasticsearch
+      host "{{ .Values.output.elasticsearch.host }}"
       port {{ .Values.output.elasticsearch.port }}
       scheme {{ .Values.output.elasticsearch.scheme }}
       ssl_verify {{ .Values.output.elasticsearch.sslVerify }}
       reload_connections {{ .Values.output.elasticsearch.reloadConnections }}
 
       {{- if .Values.output.elasticsearch.user }}
-      user {{ .Values.output.elasticsearch.user }}
-      {{- end}}
+      user "{{ .Values.output.elasticsearch.user }}"
+      {{- end }}
       {{- if .Values.output.elasticsearch.password }}
-      password {{ .Values.output.elasticsearch.password }}
-      {{- end}}
-
+      password "{{ .Values.output.elasticsearch.password }}"
+      {{- end }}
+      ssl_version TLSv1_2
       logstash_format true
       template_file /fluentd/etc/elasticsearch-template-es5x.json
       template_name elasticsearch-template-es5x.json
