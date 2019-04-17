@@ -1,0 +1,77 @@
+# Default values for springboot.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  tag: 
+  pullPolicy: IfNotPresent
+service:
+  name: http
+  type: ClusterIP
+  externalPort: 8080
+  internalPort: 8080
+ingress:
+  enabled: false
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+
+revisionHistoryLimit: 10
+updateStrategy:
+  # https://v1-8.docs.kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 0%
+    maxSurge: 25%
+
+livenessProbe:
+  httpGet:
+    path: /liveness
+    port: 8080
+  initialDelaySeconds: 60
+  periodSeconds: 1
+readinessProbe:
+  httpGet:
+    path: /liveness
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 1
+
+project: fps
+jsonLogging: false
+#volumes:
+#  varlogdocker:
+#    containerPath: /var/log/docker
+#    volumeSpec:
+#      hostPath:
+#        path: /var/log/docker
+#  somenfs:
+#    containerPath: /mnt/data
+#    volumeSpec:
+#      nfs:
+#        server: nfs.exmaple.com:9999
+#        path: /export/my-path
+#env:
+#  CONFIGREF:
+#    configMapKeyRef:
+#      name: my-map
+#      key: someVal
+#  SECRETREF:
+#    secretKeyRef:
+#      name: aaa
+#      key: bbb.ccc
+#      optional: true
+#  SERVER_PORT: 
+#    value: 80
+#  SECRET:
+#    value: somePassword
+#    sensitive: true
+#  SECRET_WITH_CUSTOM_KEY: 
+#    value: megapassword
+#    sensitive: true
+#    key: lt.jinventi.some-service.password

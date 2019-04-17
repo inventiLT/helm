@@ -1,0 +1,156 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: springboot-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    project: {{ required "'project' value not found" .Values.project }}
+    {{ required "'project' value not found" .Values.project }}-app: "true"
+spec:
+  selector:
+    matchLabels:
+      release: {{ .Release.Name }}
+      app: {{ template "name" . }}
+      {{ required "'project' value not found" .Values.project }}-app: "true"
+  {{- if .Values.revisionHistoryLimit }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  {{- end}}
+  {{- if .Values.updateStrategy }}
+  strategy:
+{{ toYaml .Values.updateStrategy | indent 4}}
+  {{- end }}
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+        {{ required "'project' value not found" .Values.project }}-app: "true"
+        {{- if .Values.jmxMonitoring }}
+        jmx: "true"
+        {{- end }}
+      {{- if .Values.templateAnnotations }}
+      annotations:
+{{ toYaml .Values.templateAnnotations | indent 8}}
+      {{- end }}
+    spec:
+    {{- if eq .Values.antiAffinity "hard" }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: {{ include "name" . | quote }}
+                  release: {{ .Release.Name | quote }}
+      {{- else if eq .Values.antiAffinity "soft" }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchLabels:
+                    app: {{ template "name" . }}
+                    release: {{ .Release.Name | quote }}
+      {{- end }}
+      securityContext:
+        runAsUser: {{ required "podUID must be specified!" .Values.podUID }}
+      {{ if .Values.initContainers }}
+      initContainers:
+{{ toYaml .Values.initContainers | indent 8 }}
+      {{ end }}
+      containers:
+        - name: {{ template "name" . }}
+          image: "{{ .Values.global.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- if .Values.jsonLogging}}
+            - name: LOGGING_CONFIG
+              value: "/opt/logback_config.xml"
+            {{- end }}
+            {{- if .Values.timezone }}
+            - name: TZ
+              value: {{ .Values.timezone | quote }}
+            {{- end }}
+          {{- if .Values.env -}}
+            {{- $secretName := include "secretname" . -}}
+            {{- range $name, $definition := .Values.env }}
+            - name: {{ $name | quote }}
+              {{- if $definition.sensitive }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $secretName | quote }}
+                  key: {{ $definition.key | default $name | quote }}
+                  {{- if $definition.optional }}
+                  optional: true
+                  {{- end }}
+              {{- else if $definition.configMapKeyRef }}
+              valueFrom:
+                configMapKeyRef:
+{{ toYaml $definition.configMapKeyRef | indent 18 }}
+              {{- else if $definition.secretKeyRef }}
+              valueFrom:
+                secretKeyRef:
+{{ toYaml $definition.secretKeyRef | indent 18 }}
+              {{- else }}
+              value: {{ required (printf "Value for variable env.%s.value is undefined" $name) $definition.value | quote }}
+              {{- if $definition.optional }}
+              optional: true
+              {{- end }}
+              {{- end }}
+           {{- end }}
+          {{ end }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          volumeMounts:
+            - name: logging-config
+              mountPath: /opt/logback_config.xml
+              subPath: logbackxml
+            {{- if .Values.jmxMonitoring }}
+            - name: jmx-config
+              mountPath: /opt/agent-bond/jmx_exporter_config.yml
+              subPath: config
+            {{- end }}
+          {{- if .Values.volumes }}
+            {{- range $name, $definition := .Values.volumes }}
+            - name: {{ $name | quote }}
+              mountPath: {{ $definition.containerPath }}
+              {{- if $definition.volumeSubPath }}
+              subPath: {{ $definition.volumeSubPath }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.livenessProbe }}
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          {{- end }}
+          {{- if .Values.readinessProbe }}
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        {{- if .Values.jmxMonitoring }}
+        - name: jmx-config
+          configMap:
+            name: "jmx-config"
+        {{- end }}
+        - name: logging-config
+          configMap:
+            name: "logback-config"
+    {{- if .Values.volumes }}
+      {{- range $name, $definition := .Values.volumes }}
+        - name: {{ $name | quote }}
+{{ toYaml $definition.volumeSpec | indent 10 -}}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
