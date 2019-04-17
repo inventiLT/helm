@@ -5,7 +5,7 @@
 ```console
 $ helm package charts/mychart -d docs/
 $ helm repo index docs --url https://inventi.github.io/helm
-$ git add -i
+$ git add docs/
 $ git commit -av
 $ git push origin master
 ```
