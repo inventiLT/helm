@@ -1,0 +1,12 @@
+description: Configuration for springboot based services 
+engine: gotpl
+keywords:
+- springboot
+- config
+maintainers:
+- email: info@inventi.lt
+  name: Inventi
+name: config
+sources:
+- https://github.com/inventi/helm
+version: 0.1.0
