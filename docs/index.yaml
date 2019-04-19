@@ -2,11 +2,11 @@ apiVersion: v1
 entries:
   springboot:
   - apiVersion: v1
-    created: 2019-04-17T09:09:02.428465+03:00
+    created: 2019-04-19T10:19:37.848087+03:00
     description: A Helm chart for Kubernetes
-    digest: 4b5e333bf887449cd431c03a374ab340b466c1b348a3988d7b8a83b174ec4761
+    digest: 1c56a04979a1899a39e58a1696d655ae11c23e064e74e985856bcd016a77bef5
     name: springboot
     urls:
     - https://inventi.github.io/helm/springboot-0.1.0.tgz
     version: 0.1.0
-generated: 2019-04-17T09:09:02.427309+03:00
+generated: 2019-04-19T10:19:37.842701+03:00

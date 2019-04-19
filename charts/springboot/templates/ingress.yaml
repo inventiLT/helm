@@ -1,6 +1,7 @@
 {{- if .Values.ingress.enabled -}}
 {{- $serviceName := include "fullname" . -}}
 {{- $servicePort := .Values.service.externalPort -}}
+
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -15,19 +16,38 @@ metadata:
     {{- range $key, $value := .Values.ingress.annotations }}
       {{ $key }}: {{ $value | quote }}
     {{- end }}
+    {{ if .Values.ingress.kong -}}
+    kubernetes.io/ingress.class: "kong"
+    configuration.konghq.com: {{ template "fullname" . }}
+    {{- end}}
 spec:
   rules:
-    {{- range $host := .Values.ingress.hosts }}
-    - host: {{ $host }}
-      http:
+    - http:
         paths:
-          - path: /
+          {{- range $key := .Values.ingress.paths }}
+          - path: {{$key}}
             backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
-    {{- end -}}
-  {{- if .Values.ingress.tls }}
-  tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
-  {{- end -}}
+          {{- end}}
+{{ if .Values.ingress.kong -}}
+---
+apiVersion: configuration.konghq.com/v1
+kind: KongIngress
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: springboot-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{ required "'project' value not found" .Values.project }}-app: "true"
+proxy:
+  path: /
+route:
+  protocols:
+  - http
+  strip_path: {{ .Values.ingress.kong.stripPath }}
+  preserve_host: {{ .Values.ingress.kong.preserveHost }}
+{{- end -}}
 {{- end -}}
