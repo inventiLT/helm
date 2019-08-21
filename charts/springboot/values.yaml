@@ -56,6 +56,7 @@ jsonLogging: false
 #      nfs:
 #        server: nfs.exmaple.com:9999
 #        path: /export/my-path
+
 #env:
 #  CONFIGREF:
 #    configMapKeyRef:
@@ -75,3 +76,24 @@ jsonLogging: false
 #    value: megapassword
 #    sensitive: true
 #    key: lt.jinventi.some-service.password
+
+# cronJobs:
+#   my-job:
+#     imageRepository: appropriate/curl
+#     imageTag: "3.1"
+#     # if ommited, defaults to "IfNotPresent"
+#     imagePullPolicy: IfNotPresent
+#     command: curl
+#     args: ["--fail", "--show-error", "--location", "--verbose", "-X", "POST", "${FULLNAME}:8080/hello-world" ]
+#     # In UTC timezone
+#     schedule: "*/1 * * * *"
+#     retryDurationSeconds: 30
+#     # Retry count
+#     backoffLimit: 5
+#     # https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-job-limitations
+#     concurrencyPolicy: Allow
+#     startingDeadlineSeconds:
+#     # https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/#jobs-history-limits
+#     successfulJobsHistoryLimit:
+#     failedJobsHistoryLimit:
+

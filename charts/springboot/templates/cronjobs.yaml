@@ -1,0 +1,38 @@
+{{range $name, $definition := .Values.cronJobs }}
+---
+apiVersion: "batch/v1beta1"
+kind: CronJob
+metadata:
+  name: {{ template "fullname" $ }}-cron-{{ $name }}
+  labels:
+    app: {{ template "fullname" $ }}-cron-{{ $name }}
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    release: "{{ $.Release.Name }}"
+    heritage: "{{ $.Release.Service }}"
+spec:
+  schedule: "{{ $definition.schedule }}"
+  concurrencyPolicy: "{{ $definition.concurrencyPolicy }}"
+  startingDeadlineSeconds: {{ $definition.startingDeadlineSeconds }}
+  successfulJobsHistoryLimit: {{ $definition.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ $definition.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: {{ template "fullname" $ }}-cron-{{ $name }}
+            image: "{{ required (printf "Value for variable cronjob.%s.imageRepository is undefined" $name) $definition.imageRepository }}:{{ required (printf "Value for variable cronjob.%s.imageTag is undefined" $name) $definition.imageTag }}"
+            imagePullPolicy: "{{ $definition.imagePullPolicy | default "IfNotPresent" }}"
+            {{- if $definition.command }}
+            command: [ "{{ $definition.command }}" ]
+            {{- end }}
+            {{- if $definition.args }}
+            args: 
+              {{- range $definition.args }}
+              - {{ . | replace "%FULLNAME%" (include "fullname" $) | quote }}
+              {{- end }}
+            {{- end }}
+          restartPolicy: Never
+      backoffLimit: {{ $definition.backoffLimit }}
+      activeDeadlineSeconds: {{ $definition.retryDurationSeconds }}
+{{ end }}
