@@ -87,7 +87,7 @@ jsonLogging: false
 #     args: ["--fail", "--show-error", "--location", "--verbose", "-X", "POST", "${FULLNAME}:8080/hello-world" ]
 #     # In UTC timezone
 #     schedule: "*/1 * * * *"
-#     retryDurationSeconds: 30
+#     activeDeadlineSeconds: 30
 #     # Retry count
 #     backoffLimit: 5
 #     # https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-job-limitations
