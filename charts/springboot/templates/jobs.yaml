@@ -1,0 +1,35 @@
+{{ range $name, $definition := .Values.jobs }}
+---
+apiVersion: "batch/v1"
+kind: Job
+metadata:
+{{- if $definition.redeployable }}
+  name: {{ template "fullname" $ }}-{{ $name }}-{{ $.Release.Time.Seconds }}
+{{- else }}
+  name: {{ template "fullname" $ }}-{{ $name }}
+{{- end }}  
+  labels:
+    app: {{ template "fullname" $ }}-{{ $name }}
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    release: "{{ $.Release.Name }}"
+    heritage: "{{ $.Release.Service }}"
+spec:
+  template:
+    spec:
+      containers:
+      - name: {{ template "fullname" $ }}-{{ $name }}
+        image: "{{ required (printf "Value for variable job.%s.imageRepository is undefined" $name) $definition.imageRepository }}:{{ required (printf "Value for variable job.%s.imageTag is undefined" $name) $definition.imageTag }}"
+        imagePullPolicy: "{{ $definition.imagePullPolicy | default "IfNotPresent" }}"
+        {{- if $definition.command }}
+        command: [ "{{ $definition.command }}" ]
+        {{- end }}
+        {{- if $definition.args }}
+        args: 
+          {{- range $definition.args }}
+          - {{ . | replace "%FULLNAME%" (include "fullname" $) | quote }}
+          {{- end }}
+        {{- end }}
+      restartPolicy: "OnFailure"
+  backoffLimit: {{ $definition.backoffLimit }}
+  activeDeadlineSeconds: {{ $definition.activeDeadlineSeconds }}
+{{ end }}
