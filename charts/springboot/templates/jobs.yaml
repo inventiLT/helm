@@ -4,7 +4,7 @@ apiVersion: "batch/v1"
 kind: Job
 metadata:
 {{- if $definition.redeployable }}
-  name: {{ template "fullname" $ }}-{{ $name }}-{{ $.Release.Time.Seconds }}
+  name: {{ template "fullname" $ }}-{{ $name }}-{{ randAlphaNum 5 | lower }}
 {{- else }}
   name: {{ template "fullname" $ }}-{{ $name }}
 {{- end }}  
