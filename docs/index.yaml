@@ -1,10 +1,10 @@
 apiVersion: v1
 entries:
   config:
-  - created: "2019-10-10T16:19:37.893123+03:00"
+  - apiVersion: v1
+    created: "2020-01-09T11:21:31.35118+02:00"
     description: Configuration for springboot based services
     digest: a9c3213387fec16f7ea3eb85fad34607d52fe62f88368c6734ac563b11e29c56
-    engine: gotpl
     keywords:
     - springboot
     - config
@@ -19,7 +19,15 @@ entries:
     version: 0.1.0
   springboot:
   - apiVersion: v1
-    created: "2019-10-10T16:19:37.895071+03:00"
+    created: "2020-01-09T11:21:31.354319+02:00"
+    description: A Helm chart for Kubernetes
+    digest: 2c19fe4c22b1d7a89d90ec71ca929c38fb67a7d1d5a94691bbed5995b4856470
+    name: springboot
+    urls:
+    - https://inventi.github.io/helm/springboot-1.2.0.tgz
+    version: 1.2.0
+  - apiVersion: v1
+    created: "2020-01-09T11:21:31.353713+02:00"
     description: A Helm chart for Kubernetes
     digest: 313f445bb99521c808e9af3df5537b809525b6926d5385c02e8073ffc0442901
     name: springboot
@@ -27,7 +35,7 @@ entries:
     - https://inventi.github.io/helm/springboot-1.1.0.tgz
     version: 1.1.0
   - apiVersion: v1
-    created: "2019-10-10T16:19:37.894787+03:00"
+    created: "2020-01-09T11:21:31.353077+02:00"
     description: A Helm chart for Kubernetes
     digest: 32c1e3396e1c68ed82f3dfbd89c21baef27d5c4f6481b8a8175e0e4f6c4017e7
     name: springboot
@@ -35,7 +43,7 @@ entries:
     - https://inventi.github.io/helm/springboot-1.0.0.tgz
     version: 1.0.0
   - apiVersion: v1
-    created: "2019-10-10T16:19:37.894347+03:00"
+    created: "2020-01-09T11:21:31.352502+02:00"
     description: A Helm chart for Kubernetes
     digest: 4d9579ac8d49dbbb1418bff363bf12fbaa528215ab9bf63de9aca363b29948dd
     name: springboot
@@ -43,11 +51,11 @@ entries:
     - https://inventi.github.io/helm/springboot-0.2.0.tgz
     version: 0.2.0
   - apiVersion: v1
-    created: "2019-10-10T16:19:37.893903+03:00"
+    created: "2020-01-09T11:21:31.351892+02:00"
     description: A Helm chart for Kubernetes
     digest: d5b04a55bb6cc6b78c0ff7a6d8ca5b4db473a8acf4186a5256a0f87b22866b92
     name: springboot
     urls:
     - https://inventi.github.io/helm/springboot-0.1.0.tgz
     version: 0.1.0
-generated: "2019-10-10T16:19:37.892524+03:00"
+generated: "2020-01-09T11:21:31.348219+02:00"
