@@ -17,8 +17,8 @@ metadata:
     {{- range $key, $value := .Values.ingressExternal.annotations }}
       {{ $key }}: {{ $value | quote }}
     {{- end }}
+    kubernetes.io/ingress.class: {{ required "Required ingressExternal.ingressClass value not set" .Values.ingressExternal.ingressClass }}
     {{ if .Values.ingressExternal.kong -}}
-    kubernetes.io/ingress.class: "kong-external"
     configuration.konghq.com: {{ template "fullname" . }}-ext
     {{- end}}
 spec:
