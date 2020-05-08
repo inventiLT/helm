@@ -12,6 +12,10 @@ service:
   internalPort: 8080
 ingress:
   enabled: false
+# Manages external ingress. Needs to specify separate ingressClass to work properly.  
+ingressExternal:
+  enabled: false
+  # ingressClass: "kong-external"
 resources: {}
   # limits:
   #  cpu: 100m
