@@ -32,12 +32,14 @@ spec:
             serviceName: {{ $serviceName }}
             servicePort: {{ $servicePort }}
         {{- end}}
+  {{ if .Values.ingressExternal.tls -}}      
   tls:
   - hosts:
     - {{ required "Required ingressExternal.hostname value not set" .Values.ingressExternal.hostname }}
-    {{ if .Values.ingressExternal.tlsSecretName -}}
-    secretName: {{ .Values.ingressExternal.tlsSecretName }}
+    {{ if .Values.ingressExternal.tls.tlsSecretName -}}
+    secretName: {{ .Values.ingressExternal.tls.tlsSecretName }}
     {{- end}}
+  {{- end}}
 {{ if .Values.ingressExternal.kong -}}
 ---
 apiVersion: configuration.konghq.com/v1
