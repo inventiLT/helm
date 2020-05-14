@@ -15,7 +15,7 @@ metadata:
     {{ required "'project' value not found" .Values.project }}-app: "true"
   annotations:
     {{- range $key, $value := .Values.ingressExternal.annotations }}
-      {{ $key }}: {{ $value | quote }}
+    {{ $key }}: {{ $value | quote }}
     {{- end }}
     kubernetes.io/ingress.class: {{ required "Required ingressExternal.ingressClass value not set" .Values.ingressExternal.ingressClass }}
     {{ if .Values.ingressExternal.kong -}}
@@ -23,14 +23,23 @@ metadata:
     {{- end}}
 spec:
   rules:
-    - http:
-        paths:
-          {{- range $key := .Values.ingressExternal.paths }}
-          - path: {{$key}}
-            backend:
-              serviceName: {{ $serviceName }}
-              servicePort: {{ $servicePort }}
-          {{- end}}
+  - host: {{ required "Required ingressExternal.hostname value not set" .Values.ingressExternal.hostname }}
+    http:
+      paths:
+        {{- range $key := .Values.ingressExternal.paths }}
+        - path: {{$key}}
+          backend:
+            serviceName: {{ $serviceName }}
+            servicePort: {{ $servicePort }}
+        {{- end}}
+  {{ if .Values.ingressExternal.tls -}}      
+  tls:
+  - hosts:
+    - {{ required "Required ingressExternal.hostname value not set" .Values.ingressExternal.hostname }}
+    {{ if .Values.ingressExternal.tls.tlsSecretName -}}
+    secretName: {{ .Values.ingressExternal.tls.tlsSecretName }}
+    {{- end}}
+  {{- end}}
 {{ if .Values.ingressExternal.kong -}}
 ---
 apiVersion: configuration.konghq.com/v1
