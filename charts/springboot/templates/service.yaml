@@ -18,6 +18,9 @@ spec:
       {{- end }}
       protocol: TCP
       name: {{ .Values.service.name }}
+    {{- if .Values.service.otherPorts }}
+{{ toYaml .Values.service.otherPorts | indent 4 }}
+    {{- end }}
   selector:
     app: {{ template "name" . }}
     release: {{ .Release.Name }}
