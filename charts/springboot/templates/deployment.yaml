@@ -137,6 +137,10 @@ spec:
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+      {{- if .Values.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret }}
+      {{- end }}
       volumes:
         {{- if .Values.jmxMonitoring }}
         - name: jmx-config
