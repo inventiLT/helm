@@ -60,6 +60,9 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: {{ required "podUID must be specified!" .Values.podUID }}
+        {{- if .Values.fsGroup }}
+        fsGroup: {{ .Values.fsGroup }}
+        {{- end }}
       {{ if .Values.initContainers }}
       initContainers:
 {{ toYaml .Values.initContainers | indent 8 }}
